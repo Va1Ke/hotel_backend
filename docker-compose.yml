@@ -1,0 +1,40 @@
+version: "3.10"
+
+services:
+
+  hotel_db:
+    container_name: hotel_db
+    image: postgres
+    ports:
+      - ${POSTGRES_PORT}:${POSTGRES_PORT}
+    env_file:
+      - .env
+    volumes:
+      - my-datavolume:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+
+  web_hotel:
+    build: .
+    command: uvicorn app.main:app --host ${APP_HOST} --port ${APP_PORT}
+    ports:
+      - ${APP_PORT}:${APP_PORT}
+    env_file:
+      - .env
+    depends_on:
+      - hotel_db
+
+  pgweb_hotel:
+    image: sosedoff/pgweb
+    restart: always
+    ports:
+      - 8081:8081
+    environment:
+      - DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@hotel_db:${POSTGRES_PORT}/${POSTGRES_DB}?sslmode=disable
+    depends_on:
+      - hotel_db
+
+volumes:
+  my-datavolume:
