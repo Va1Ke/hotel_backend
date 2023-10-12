@@ -15,5 +15,8 @@ class Settings:
     POSTGRES_DB: str = get_env_value("POSTGRES_DB")
     DATABASE_URL = f"postgresql://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_HOST}:{POSTGRES_PORT}/{POSTGRES_DB}"
 
+    APP_HOST: str = get_env_value("APP_HOST")
+    APP_PORT: str = get_env_value("APP_PORT")
+
 
 settings = Settings()
