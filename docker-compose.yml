@@ -25,6 +25,9 @@ services:
       - .env
     depends_on:
       - hotel_db
+    volumes:
+      - static-data:/static
+      - versions-data:/alembic/versions
 
   pgweb_hotel:
     image: sosedoff/pgweb
@@ -38,3 +41,7 @@ services:
 
 volumes:
   my-datavolume:
+  static-data:
+    driver: local
+  versions-data:
+    driver: local

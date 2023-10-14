@@ -25,10 +25,13 @@ async def user_login(email: str, password: str):
 
 @router.post("/user/register/", tags=["User"])
 async def add_user(new_user: UserCreate, email_from_jwt: str = Depends(get_login_from_token)):
-    await UserCruds(db=db).create_user(new_user)
-    return {
-        "result": "user added successfully"
-    }
+    user = await UserCruds(db=db).get_user_by_email(email_from_jwt)
+    if user.admin:
+        await UserCruds(db=db).create_user(new_user)
+        return {
+            "result": "user added successfully"
+        }
+    raise HTTPException(status_code=400, detail="No permissions to do this")
 
 
 @router.delete("/user/delete/", tags=["User"])

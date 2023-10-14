@@ -16,14 +16,14 @@ class RoomCruds:
                                        price_per_night=room.price_per_night)
 
     async def create_room(self, room: room_schemas.RoomCreate) -> HTTPException:
-        db_room = rooms.insert().values(kind=room.kind, number_of_beds=room.number_of_beds,
+        db_room = rooms.insert().values(kind=room.kind.name, number_of_beds=room.number_of_beds,
                                         price_per_night=room.price_per_night)
         await self.db.execute(db_room)
         return HTTPException(status_code=200, detail="Success")
 
     async def update_room(self, new_room: room_schemas.RoomReturn):
         query = (rooms.update().where(rooms.c.room_id == new_room.room_id).values(
-            kind=new_room.kind, number_of_beds=new_room.number_of_beds,
+            kind=new_room.kind.name, number_of_beds=new_room.number_of_beds,
             price_per_night=new_room.price_per_night
         ).returning(rooms.c.room_id))
         await self.db.execute(query=query)
