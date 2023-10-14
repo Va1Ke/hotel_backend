@@ -4,8 +4,7 @@ import uvicorn
 from app.database import db
 from app.config import settings
 from fastapi import FastAPI
-#from app.routes import company_routes, routes, invitation_from_owner_routes, request_from_user_routes, quiz_routes, quiz_workflow_routes, analitics_routes, csv_routes
-
+from app.routes import user_routes
 
 app = FastAPI()
 
@@ -29,20 +28,13 @@ app.add_middleware(
 async def startup():
     await db.connect()
 
+
 @app.on_event("shutdown")
 async def shutdown():
     await db.disconnect()
 
 
-#app.include_router(routes.router)
-#app.include_router(company_routes.router)
-#app.include_router(invitation_from_owner_routes.router)
-#app.include_router(request_from_user_routes.router)
-#app.include_router(quiz_routes.router)
-#app.include_router(quiz_workflow_routes.router)
-#app.include_router(analitics_routes.router)
-#app.include_router(csv_routes.router)
-
+app.include_router(user_routes.router)
 
 if __name__ == "__main__":
     uvicorn.run("main:app", host=settings.APP_HOST, port=settings.APP_PORT, reload=True)

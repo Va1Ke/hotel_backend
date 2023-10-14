@@ -1,23 +1,9 @@
 import os
-import enum
 import base64
 import io
 import uuid
 from PIL import Image
 from fastapi import HTTPException
-
-
-def get_env_value(env_variable):
-    try:
-        return os.environ[env_variable]
-    except KeyError:
-        raise 'Set the' + str(env_variable) + 'environment variable'
-
-
-class ServiceKind(enum.Enum):
-    Standart = "Standart"
-    Business = "Business"
-    President = "President"
 
 
 def from_base_to_photo(code: str, path_folder: str):

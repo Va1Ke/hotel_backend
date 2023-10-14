@@ -2,7 +2,8 @@ from fastapi import HTTPException
 import databases
 from app.schemas import room_photo_schemas
 from app.models.models import room_photos
-from app.utils import from_base_to_photo, from_photo_to_base, delete_photo, ServiceKind
+from app.utils.photo import from_base_to_photo, from_photo_to_base, delete_photo
+from app.utils.general import ServiceKind
 
 
 class RoomPhotoCruds:

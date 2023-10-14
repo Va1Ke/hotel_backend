@@ -13,13 +13,14 @@ class UserCruds:
         if user == None:
             return None
         return user_schemas.UserReturn(user_id=user.user_id, email=user.email, password=user.password,
-                                       name=user.name)
+                                       name=user.name, admin=user.admin)
 
     async def get_user_by_email(self, email: str) -> user_schemas.UserReturn:
         user = await self.db.fetch_one(users.select().where(users.c.email == email))
         if user == None:
             return None
-        return user_schemas.UserReturn(user_id=user.user_id, email=user.email, password=user.password, name=user.name)
+        return user_schemas.UserReturn(user_id=user.user_id, email=user.email, password=user.password, name=user.name,
+                                       admin=user.admin)
 
     async def get_users(self, skip: int = 0, limit: int = 100) -> list[user_schemas.UserReturn]:
         query = users.select().offset(skip).limit(limit)
