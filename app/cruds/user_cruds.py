@@ -9,7 +9,7 @@ class UserCruds:
         self.db = db
 
     async def get_user_by_id(self, id: int) -> user_schemas.UserReturn:
-        user = await self.db.fetch_one(users.select().where(users.c.id == id))
+        user = await self.db.fetch_one(users.select().where(users.c.user_id == id))
         if user == None:
             return None
         return user_schemas.UserReturn(user_id=user.user_id, email=user.email, password=user.password,
