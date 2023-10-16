@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Depends
 from fastapi import HTTPException
+from app.cruds.user_room_cruds import UserRoomCruds
 from app.cruds.room_cruds import RoomCruds
 from app.cruds.user_cruds import UserCruds
 from app.database import db
@@ -18,6 +19,15 @@ async def add_room(new_room: RoomCreate, email_from_jwt: str = Depends(get_login
             "result": "room added successfully"
         }
     raise HTTPException(status_code=400, detail="No permissions to do this")
+
+
+@router.get("/room-by-user/", tags=["Room"])
+async def get_room(user_id: int, email_from_jwt: str = Depends(get_login_from_token)):
+    user = await UserCruds(db=db).get_user_by_email(email_from_jwt)
+    if user.admin:
+        return await UserRoomCruds(db=db).get_room_by_user(user_id)
+    raise HTTPException(status_code=400, detail="No permissions to do this")
+
 
 @router.put("/room/update/", tags=["Room"])
 async def update_room(room_id: int, new_room: RoomCreate, email_from_jwt: str = Depends(get_login_from_token)):

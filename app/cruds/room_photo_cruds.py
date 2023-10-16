@@ -18,6 +18,9 @@ class RoomPhotoCruds:
         return room_photo_schemas.AddRoomPhoto(kind=kind, photo=photo_base64)
 
     async def add_photo(self, room: room_photo_schemas.AddRoomPhoto) -> HTTPException:
+        check = await self.db.fetch_one(room_photos.select().where(room_photos.c.kind == room.kind.name))
+        if check:
+            raise HTTPException(status_code=400, detail="For this room is photo already, try to update")
         path = from_base_to_photo(room.photo, 'static')
         db_room = room_photos.insert().values(kind=room.kind.name, path=path)
         await self.db.execute(db_room)

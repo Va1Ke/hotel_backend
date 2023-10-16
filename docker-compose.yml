@@ -27,7 +27,6 @@ services:
       - hotel_db
     volumes:
       - static-data:/static
-      - versions-data:/alembic/versions
 
   pgweb_hotel:
     image: sosedoff/pgweb
@@ -35,13 +34,11 @@ services:
     ports:
       - 8081:8081
     environment:
-      - DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@hotel_db:${POSTGRES_PORT}/${POSTGRES_DB}?sslmode=disable
+      - PGWEB_DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@hotel_db:${POSTGRES_PORT}/${POSTGRES_DB}?sslmode=disable
     depends_on:
       - hotel_db
 
 volumes:
   my-datavolume:
   static-data:
-    driver: local
-  versions-data:
     driver: local

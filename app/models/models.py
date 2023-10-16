@@ -10,7 +10,7 @@ class User(Base):
     name = Column(String)
     password = Column(String)
     email = Column(String, unique=True)
-    admin = Column(Boolean, default=False)
+    admin = Column(Boolean, default=False, nullable=False)
 
 
 users = User.__table__

@@ -23,6 +23,22 @@ async def user_login(email: str, password: str):
     raise HTTPException(status_code=400, detail="No such user")
 
 
+@router.get("/user-by-email/", tags=["User"])
+async def get_user_by_email(email: str, email_from_jwt: str = Depends(get_login_from_token)):
+    user = await UserCruds(db=db).get_user_by_email(email_from_jwt)
+    if user.admin:
+        return await UserCruds(db=db).get_user_by_email_outer(email)
+    raise HTTPException(status_code=400, detail="No permissions to do this")
+
+
+@router.get("/users/", tags=["User"])
+async def get_all_users(email_from_jwt: str = Depends(get_login_from_token)):
+    user = await UserCruds(db=db).get_user_by_email(email_from_jwt)
+    if user.admin:
+        return await UserCruds(db=db).get_users()
+    raise HTTPException(status_code=400, detail="No permissions to do this")
+
+
 @router.post("/user/register/", tags=["User"])
 async def add_user(new_user: UserCreate, email_from_jwt: str = Depends(get_login_from_token)):
     user = await UserCruds(db=db).get_user_by_email(email_from_jwt)

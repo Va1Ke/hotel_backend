@@ -4,7 +4,7 @@ import uvicorn
 from app.database import db
 from app.config import settings
 from fastapi import FastAPI
-from app.routes import user_routes, room_routes, photo_room_routes
+from app.routes import user_routes, room_routes, photo_room_routes, user_room_routes
 
 app = FastAPI()
 
@@ -37,6 +37,7 @@ async def shutdown():
 app.include_router(user_routes.router)
 app.include_router(room_routes.router)
 app.include_router(photo_room_routes.router)
+app.include_router(user_room_routes.router)
 
 if __name__ == "__main__":
     uvicorn.run("main:app", host=settings.APP_HOST, port=settings.APP_PORT, reload=True)
