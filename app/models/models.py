@@ -21,6 +21,7 @@ kinds = ('Standart', 'Business', 'President')
 class Room(Base):
     __tablename__ = "rooms"
     room_id = Column(Integer, primary_key=True, index=True, unique=True)
+    room_number = Column(Integer, unique=True)
     kind = Column("kind", ENUM(*kinds, name="post_kind", create_type=False), nullable=False)
     number_of_beds = Column(Integer)
     price_per_night = Column(Integer)
@@ -35,8 +36,8 @@ rooms = Room.__table__
 class UserRoom(Base):
     __tablename__ = "user_rooms"
     user_room_id = Column(Integer, primary_key=True, index=True, unique=True)
-    user_id = Column(Integer, ForeignKey('users.user_id', ondelete='CASCADE'))
-    room_id = Column(Integer, ForeignKey('rooms.room_id', ondelete='CASCADE'))
+    user_email = Column(String, ForeignKey('users.email', ondelete='CASCADE'))
+    room_number = Column(Integer, ForeignKey('rooms.room_number', ondelete='CASCADE'))
     rented_at = Column(DateTime)
 
 

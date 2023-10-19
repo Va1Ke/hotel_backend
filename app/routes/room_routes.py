@@ -22,20 +22,26 @@ async def add_room(new_room: RoomCreate, email_from_jwt: str = Depends(get_login
 
 
 @router.get("/room-by-user/", tags=["Room"])
-async def get_room(user_id: int, email_from_jwt: str = Depends(get_login_from_token)):
+async def get_room(user_email: str, email_from_jwt: str = Depends(get_login_from_token)):
     user = await UserCruds(db=db).get_user_by_email(email_from_jwt)
     if user.admin:
-        return await UserRoomCruds(db=db).get_room_by_user(user_id)
+        return await UserRoomCruds(db=db).get_room_by_user(user_email)
+    raise HTTPException(status_code=400, detail="No permissions to do this")
+
+
+@router.get("/available/room/", tags=["Room"])
+async def get_free_room(email_from_jwt: str = Depends(get_login_from_token)):
+    user = await UserCruds(db=db).get_user_by_email(email_from_jwt)
+    if user.admin:
+        return await RoomCruds(db=db).get_available_rooms()
     raise HTTPException(status_code=400, detail="No permissions to do this")
 
 
 @router.put("/room/update/", tags=["Room"])
-async def update_room(room_id: int, new_room: RoomCreate, email_from_jwt: str = Depends(get_login_from_token)):
+async def update_room(new_room: RoomCreate, email_from_jwt: str = Depends(get_login_from_token)):
     user = await UserCruds(db=db).get_user_by_email(email_from_jwt)
     if user.admin:
-        new_info = RoomReturn(room_id=room_id, kind=new_room.kind, number_of_beds=new_room.number_of_beds,
-                              price_per_night=new_room.price_per_night)
-        await RoomCruds(db=db).update_room(new_info)
+        await RoomCruds(db=db).update_room(new_room)
         return {
             "result": "room updated successfully"
         }
@@ -43,10 +49,10 @@ async def update_room(room_id: int, new_room: RoomCreate, email_from_jwt: str = 
 
 
 @router.delete("/room/delete/", tags=["Room"])
-async def delete_room(room_id: int, email_from_jwt: str = Depends(get_login_from_token)):
+async def delete_room(room_number: int, email_from_jwt: str = Depends(get_login_from_token)):
     user = await UserCruds(db=db).get_user_by_email(email_from_jwt)
     if user.admin:
-        await RoomCruds(db=db).delete_room(room_id)
+        await RoomCruds(db=db).delete_room(room_number)
         return {
             "result": "room deleted successfully"
         }

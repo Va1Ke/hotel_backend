@@ -10,10 +10,10 @@ router = APIRouter()
 
 
 @router.post("/room/rent/", tags=["Manage"])
-async def rent_room(user_id: int, room_id: int, email_from_jwt: str = Depends(get_login_from_token)):
+async def rent_room(user_email: str, room_number: int, email_from_jwt: str = Depends(get_login_from_token)):
     user = await UserCruds(db=db).get_user_by_email(email_from_jwt)
     if user.admin:
-        await UserRoomCruds(db=db).rent_room(RentRoom(user_id=user_id, room_id=room_id))
+        await UserRoomCruds(db=db).rent_room(RentRoom(user_email=user_email, room_number=room_number))
         return {
             "result": "room rented successfully"
         }
@@ -21,10 +21,10 @@ async def rent_room(user_id: int, room_id: int, email_from_jwt: str = Depends(ge
 
 
 @router.post("/room/leave/", tags=["Manage"])
-async def leave_room(user_id: int, email_from_jwt: str = Depends(get_login_from_token)):
+async def leave_room(user_email: str, email_from_jwt: str = Depends(get_login_from_token)):
     user = await UserCruds(db=db).get_user_by_email(email_from_jwt)
     if user.admin:
-        await UserRoomCruds(db=db).leave_room(user_id)
+        await UserRoomCruds(db=db).leave_room(user_email)
         return {
             "result": "leaved successfully"
         }

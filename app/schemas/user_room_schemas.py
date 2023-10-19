@@ -2,5 +2,5 @@ from pydantic import BaseModel
 
 
 class RentRoom(BaseModel):
-    user_id: int
-    room_id: int
+    user_email: str
+    room_number: int
